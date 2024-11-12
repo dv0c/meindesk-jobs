@@ -1,31 +1,19 @@
 "use client"
 
-import * as React from "react"
 import {
-  AudioWaveform,
   BarChart2,
-  BookOpen,
-  Bot,
   CheckSquare,
   ClipboardList,
-  Command,
   CreditCard,
-  FileText,
-  Frame,
   GalleryVerticalEnd,
   Globe,
   HelpCircle,
-  LayoutDashboard,
-  Map,
   Package,
-  PieChart,
   Settings,
-  Settings2,
-  ShoppingBag,
   ShoppingCart,
-  SquareTerminal,
-  Users,
+  Users
 } from "lucide-react"
+import * as React from "react"
 
 import { NavMain } from "@/components/nav-main"
 import { NavProjects } from "@/components/nav-projects"
@@ -38,8 +26,7 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar"
-import { currentUser, getAuth } from "@clerk/nextjs/server"
-import { useAuth, useUser } from "@clerk/clerk-react"
+import { useUser } from "@clerk/clerk-react"
 
 // This is sample data.
 const data = {
@@ -66,22 +53,6 @@ const data = {
     // },
   ],
   navMain: [
-    {
-      title: "Dashboard",
-      url: "/dashboard",
-      icon: LayoutDashboard,
-      isActive: true,
-      items: [
-        {
-          title: "Overview",
-          url: "/dashboard/overview",
-        },
-        {
-          title: "Analytics",
-          url: "/dashboard/analytics",
-        },
-      ],
-    },
     {
       title: "Websites",
       url: "/websites",
