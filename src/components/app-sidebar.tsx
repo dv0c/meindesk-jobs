@@ -3,15 +3,28 @@
 import * as React from "react"
 import {
   AudioWaveform,
+  BarChart2,
   BookOpen,
   Bot,
+  CheckSquare,
+  ClipboardList,
   Command,
+  CreditCard,
+  FileText,
   Frame,
   GalleryVerticalEnd,
+  Globe,
+  HelpCircle,
+  LayoutDashboard,
   Map,
+  Package,
   PieChart,
+  Settings,
   Settings2,
+  ShoppingBag,
+  ShoppingCart,
   SquareTerminal,
+  Users,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -54,109 +67,166 @@ const data = {
   ],
   navMain: [
     {
-      title: "Playground",
-      url: "#",
-      icon: SquareTerminal,
+      title: "Dashboard",
+      url: "/dashboard",
+      icon: LayoutDashboard,
       isActive: true,
       items: [
         {
-          title: "History",
-          url: "#",
+          title: "Overview",
+          url: "/dashboard/overview",
         },
         {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
+          title: "Analytics",
+          url: "/dashboard/analytics",
         },
       ],
     },
     {
-      title: "Models",
-      url: "#",
-      icon: Bot,
+      title: "Websites",
+      url: "/websites",
+      icon: Globe,
       items: [
         {
-          title: "Genesis",
-          url: "#",
+          title: "My Websites",
+          url: "/websites/list",
         },
         {
-          title: "Explorer",
-          url: "#",
+          title: "Request Changes",
+          url: "/websites/changes",
         },
         {
-          title: "Quantum",
-          url: "#",
+          title: "Website Analytics",
+          url: "/websites/analytics",
         },
       ],
     },
     {
-      title: "Documentation",
-      url: "#",
-      icon: BookOpen,
+      title: "Orders",
+      url: "/orders",
+      icon: ShoppingCart,
       items: [
         {
-          title: "Introduction",
-          url: "#",
+          title: "New Order",
+          url: "/orders/new",
         },
         {
-          title: "Get Started",
-          url: "#",
+          title: "Order History",
+          url: "/orders/history",
         },
         {
-          title: "Tutorials",
-          url: "#",
+          title: "Packages",
+          url: "/orders/packages",
+        },
+      ],
+    },
+    {
+      title: "Tasks",
+      url: "/tasks",
+      icon: CheckSquare,
+      items: [
+        {
+          title: "Add New Task",
+          url: "/tasks/new",
         },
         {
-          title: "Changelog",
-          url: "#",
+          title: "View Tasks",
+          url: "/tasks/list",
+        },
+        {
+          title: "Task History",
+          url: "/tasks/history",
+        },
+      ],
+    },
+    {
+      title: "Billing",
+      url: "/billing",
+      icon: CreditCard,
+      items: [
+        {
+          title: "Invoices",
+          url: "/billing/invoices",
+        },
+        {
+          title: "Payment Methods",
+          url: "/billing/payment-methods",
+        },
+        {
+          title: "Subscription",
+          url: "/billing/subscription",
+        },
+      ],
+    },
+    {
+      title: "Support",
+      url: "/support",
+      icon: HelpCircle,
+      items: [
+        {
+          title: "Submit Ticket",
+          url: "/support/new-ticket",
+        },
+        {
+          title: "Knowledge Base",
+          url: "/support/knowledge-base",
+        },
+        {
+          title: "FAQs",
+          url: "/support/faqs",
         },
       ],
     },
     {
       title: "Settings",
-      url: "#",
-      icon: Settings2,
+      url: "/settings",
+      icon: Settings,
       items: [
         {
-          title: "General",
-          url: "#",
+          title: "Account",
+          url: "/settings/account",
         },
         {
-          title: "Team",
-          url: "#",
+          title: "Notifications",
+          url: "/settings/notifications",
         },
         {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
+          title: "Security",
+          url: "/settings/security",
         },
       ],
     },
   ],
   projects: [
     {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
+      name: "Customer Management",
+      url: "/admin/customers",
+      icon: Users,
     },
     {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
+      name: "Service Packages",
+      url: "/admin/packages",
+      icon: Package,
     },
     {
-      name: "Travel",
-      url: "#",
-      icon: Map,
+      name: "Order Management",
+      url: "/admin/orders",
+      icon: ClipboardList,
     },
-  ],
+    {
+      name: "User Analytics",
+      url: "/admin/analytics",
+      icon: BarChart2,
+    },
+    {
+      name: "System Settings",
+      url: "/admin/settings",
+      icon: Settings,
+    },
+  ]
 }
+
+
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user } = useUser()
