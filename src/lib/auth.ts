@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { db } from "@/lib/db";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { nanoid } from "nanoid";
@@ -65,8 +64,6 @@ export const authOptions: NextAuthOptions = {
         session.user.image = token.picture;
         session.user.username = token.username;
         session.user.role = token.role;
-        session.user.status = token.status;
-        session.user.personalization = token.personalization;
       }
 
       return session;
@@ -98,12 +95,10 @@ export const authOptions: NextAuthOptions = {
       return {
         id: dbUser.id,
         role: dbUser.role,
-        status: dbUser.status,
         name: dbUser.name,
         email: dbUser.email,
         picture: dbUser.image,
         username: dbUser.username,
-        personalization: dbUser.personalization,
       };
     },
     redirect() {
