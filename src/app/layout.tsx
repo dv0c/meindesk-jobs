@@ -1,10 +1,4 @@
-import {
-  ClerkProvider,
-  SignInButton,
-  SignedIn,
-  SignedOut,
-  UserButton
-} from '@clerk/nextjs'
+import ReactQueryProvider from '@/components/providers/ReactQuery'
 import './globals.css'
 export default function RootLayout({
   children,
@@ -12,12 +6,12 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <ClerkProvider>
-      <html lang="en">
+    <html lang="en">
+      <ReactQueryProvider>
         <body>
           {children}
         </body>
-      </html>
-    </ClerkProvider>
+      </ReactQueryProvider>
+    </html>
   )
 }

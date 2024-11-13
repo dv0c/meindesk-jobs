@@ -39,14 +39,14 @@ export default function Component() {
                         </div>
                     </div>
                     <div className="space-y-2">
-                        <label htmlFor="username" className="text-sm font-medium text-gray-700">Email address or username</label>
+                        <label htmlFor="username" className="text-sm font-medium text-gray-700">Username</label>
                         <Input
                             id="username"
                             className="w-full h-9 text-sm"
                         />
                     </div>
                     <div className="space-y-2">
-                        <label htmlFor="email" className="text-sm font-medium text-gray-700">Email address or username</label>
+                        <label htmlFor="email" className="text-sm font-medium text-gray-700">Email address</label>
                         <Input
                             id="email"
                             className="w-full h-9 text-sm"
