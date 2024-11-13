@@ -44,10 +44,13 @@ model Analytics {
 }
 
 model User {
-  id        String    @id @default(cuid())
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  email     String    @unique
-  password  String
-  websites  Website[]
+  id         String    @id @default(cuid())
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  email      String    @unique
+  externalId String    @unique
+  password   String
+  websites   Website[]
+
+  @@index([externalId, email])
 }
