@@ -49,7 +49,6 @@ model User {
   updatedAt  DateTime  @updatedAt
   email      String    @unique
   externalId String    @unique
-  password   String
   websites   Website[]
 
   @@index([externalId, email])
