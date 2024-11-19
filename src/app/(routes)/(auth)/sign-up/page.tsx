@@ -3,8 +3,69 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
+import axios from "axios"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Form } from "@/components/ui/form"
+import { Loader2 } from "lucide-react"
+import { signIn } from "next-auth/react"
+
+const formSchema = z.object({
+    email: z.string().min(2, { message: "Email must be at least 2 characters" }).email({ message: "Email must be valid" }),
+    password: z.string().min(6, {
+        message: "Password must be at least 6 characters"
+    }).max(50, {
+        message: "Password must be less than 50 characters"
+    }),
+    username: z.string().min(2, { message: "Username must be at least 2 characters" }).max(16, { message: "Username must be less than 16 characters" })
+})
 
 export default function Component() {
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
+    const router = useRouter()
+
+    const form = useForm<z.infer<typeof formSchema>>({
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+            email: "",
+            password: "",
+            username: ""
+        },
+    })
+
+    async function onSubmit(values: z.infer<typeof formSchema>) {
+        try {
+            setIsLoading(true);
+            await axios.post('/api/auth/register', values).finally(() => setIsLoading(false)).then(async () => {
+                try {
+                    const result = await signIn("credentials", {
+                        username: values.username,
+                        password: values.password,
+                        callbackUrl: "/",
+                    })
+
+                    if (result?.error) {
+                        throw new Error(result.error)
+                    }
+
+                    router.push("/")
+                } catch (error) {
+                    console.error("Login failed:", error)
+                    setError("Login failed. Please try again.")
+                } finally {
+                    setIsLoading(false)
+                }
+            })
+        } catch (error: any) {
+            setIsLoading(false);
+            setError(error.response?.data || "Registration failed. Please try again.")
+        }
+    }
+
     return (
         <div className="w-full h-screen flex items-center justify-center">
             <Card className="md:w-[400px] max-sm:h-full w-full mx-auto shadow-lg rounded-xl">
@@ -38,54 +99,85 @@ export default function Component() {
                             <span className="bg-white px-2 text-gray-500">or</span>
                         </div>
                     </div>
-                    <div className="space-y-2">
-                        <label htmlFor="username" className="text-sm font-medium text-gray-700">Username</label>
-                        <Input
-                            id="username"
-                            className="w-full h-9 text-sm"
-                        />
-                    </div>
-                    <div className="space-y-2">
-                        <label htmlFor="email" className="text-sm font-medium text-gray-700">Email address</label>
-                        <Input
-                            id="email"
-                            className="w-full h-9 text-sm"
-                        />
-                    </div>
-                    <div className="space-y-2">
-                        <label htmlFor="password" className="text-sm font-medium text-gray-700">Password</label>
-                        <div className="relative">
-                            <Input id="password" type="password" className="w-full h-9 text-sm pr-10" />
-                            <Button
-                                type="button"
-                                variant="ghost"
-                                className="absolute inset-y-0 right-0 h-9 px-2 hover:bg-transparent"
-                                onClick={() => {
-                                    const input = document.getElementById('password') as HTMLInputElement;
-                                    input.type = input.type === 'password' ? 'text' : 'password';
-                                }}
-                            >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    className="h-4 w-4"
-                                >
-                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                                    <circle cx="12" cy="12" r="3" />
-                                </svg>
-                            </Button>
-                        </div>
-                    </div>
-                    <div className="p-5 w-full">
-                        <Button className="w-full h-8 text-sm bg-black text-white hover:bg-gray-900">
-                            Continue
-                        </Button>
-                    </div>
+                    <Form {...form}>
+                        <form id="123" className="space-y-5" onSubmit={form.handleSubmit(onSubmit)}>
+                            <div>
+                                <label htmlFor="username" className="text-sm font-medium text-gray-700">Username</label>
+                                <Input
+                                    id="username"
+                                    {...form.register("username")}
+                                    className="w-full h-9 text-sm"
+                                />
+                                {form.formState.errors.username && (
+                                    <p className="text-red-500 text-xs mt-1">
+                                        {form.formState.errors.username.message}
+                                    </p>
+                                )}
+                            </div>
+                            <div className="space-y-2">
+                                <label htmlFor="email" className="text-sm font-medium text-gray-700">Email address</label>
+                                <Input
+                                    id="email"
+                                    {...form.register("email")}
+                                    className="w-full h-9 text-sm"
+                                />
+                                {form.formState.errors.email && (
+                                    <p className="text-red-500 text-xs mt-1">
+                                        {form.formState.errors.email.message}
+                                    </p>
+                                )}
+                            </div>
+                            <div className="space-y-2">
+                                <label htmlFor="password" className="text-sm font-medium text-gray-700">Password</label>
+                                <div className="relative">
+                                    <Input
+                                        id="password"
+                                        type="password"
+                                        {...form.register("password")}
+                                        className="w-full h-9 text-sm pr-10"
+                                    />
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        className="absolute inset-y-0 right-0 h-9 px-2 hover:bg-transparent"
+                                        onClick={() => {
+                                            const input = document.getElementById('password') as HTMLInputElement;
+                                            input.type = input.type === 'password' ? 'text' : 'password';
+                                        }}
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            className="h-4 w-4"
+                                        >
+                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                            <circle cx="12" cy="12" r="3" />
+                                        </svg>
+                                    </Button>
+                                </div>
+                                {form.formState.errors.password && (
+                                    <p className="text-red-500 text-xs mt-1">
+                                        {form.formState.errors.password.message}
+                                    </p>
+                                )}
+                            </div>
+                            {error && (
+                                <p className="text-red-500 text-xs mt-1">
+                                    {error}
+                                </p>
+                            )}
+                            <div className="p-5 w-full">
+                                <Button type="submit" disabled={isLoading} className="w-full transition-all h-8 text-sm">
+                                    {isLoading ? <Loader2 className="animate-spin" /> : "Continue"}
+                                </Button>
+                            </div>
+                        </form>
+                    </Form>
                 </CardContent>
                 <CardFooter className="flex flex-col space-y-4 p-0">
                     <div className="bg-muted w-full py-4 flex items-center justify-center h-full">

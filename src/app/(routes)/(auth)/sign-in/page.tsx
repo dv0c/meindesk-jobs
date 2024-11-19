@@ -1,10 +1,61 @@
 'use client'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
+import { Form } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Loader2 } from "lucide-react"
+import { signIn } from "next-auth/react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
 
-export default function Component() {
+const formSchema = z.object({
+    email: z.string().min(2, { message: "Email must be at least 2 characters" }).email({ message: "Email must be valid" }),
+    password: z.string().min(6, {
+        message: "Password must be at least 6 characters"
+    }).max(50, {
+        message: "Password must be less than 50 characters"
+    })
+})
+
+export default function SignIn() {
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
+    const router = useRouter()
+
+    const form = useForm<z.infer<typeof formSchema>>({
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+            email: "",
+            password: ""
+        },
+    })
+
+    async function onSubmit(values: z.infer<typeof formSchema>) {
+        try {
+            setIsLoading(true);
+            const result = await signIn("credentials", {
+                email: values.email,
+                password: values.password,
+                redirect: false
+            })
+
+            if (result?.error) {
+                throw new Error(result.error)
+            }
+
+            router.push("/")
+        } catch (error: any) {
+            console.error("Login failed:", error)
+            setError("Login failed. Please try again.")
+        } finally {
+            setIsLoading(false)
+        }
+    }
+
     return (
         <div className="w-full h-screen flex items-center justify-center">
             <Card className="w-[400px] mx-auto shadow-lg rounded-xl overflow-hidden">
@@ -38,49 +89,72 @@ export default function Component() {
                             <span className="bg-white px-2 text-gray-500">or</span>
                         </div>
                     </div>
-                    <div className="space-y-2">
-                        <label htmlFor="email" className="text-sm font-medium text-gray-700">Email address or username</label>
-                        <Input
-                            id="email"
-                            className="w-full h-9 text-sm"
-                            placeholder="Email address or username"
-                            defaultValue="tasosmeidanis12@gmail.com"
-                        />
-                    </div>
-                    <div className="space-y-2">
-                        <label htmlFor="password" className="text-sm font-medium text-gray-700">Password</label>
-                        <div className="relative">
-                            <Input id="password" type="password" className="w-full h-9 text-sm pr-10" />
-                            <Button
-                                type="button"
-                                variant="ghost"
-                                className="absolute inset-y-0 right-0 h-9 px-2 hover:bg-transparent"
-                                onClick={() => {
-                                    const input = document.getElementById('password') as HTMLInputElement;
-                                    input.type = input.type === 'password' ? 'text' : 'password';
-                                }}
-                            >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    className="h-4 w-4"
-                                >
-                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                                    <circle cx="12" cy="12" r="3" />
-                                </svg>
-                            </Button>
-                        </div>
-                    </div>
-                    <div className="p-5 w-full">
-                        <Button className="w-full h-8 text-sm bg-black text-white hover:bg-gray-900">
-                            Continue
-                        </Button>
-                    </div>
+                    <Form {...form}>
+                        <form id="123" className="space-y-5" onSubmit={form.handleSubmit(onSubmit)}>
+                            <div>
+                                <label htmlFor="email" className="text-sm font-medium text-gray-700">Email address</label>
+                                <Input
+                                    id="email"
+                                    {...form.register("email")}
+                                    className="w-full h-9 text-sm"
+                                />
+                                {form.formState.errors.email && (
+                                    <p className="text-red-500 text-xs mt-1">
+                                        {form.formState.errors.email.message}
+                                    </p>
+                                )}
+                            </div>
+                            <div className="space-y-2">
+                                <label htmlFor="password" className="text-sm font-medium text-gray-700">Password</label>
+                                <div className="relative">
+                                    <Input
+                                        id="password"
+                                        type="password"
+                                        {...form.register("password")}
+                                        className="w-full h-9 text-sm pr-10"
+                                    />
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        className="absolute inset-y-0 right-0 h-9 px-2 hover:bg-transparent"
+                                        onClick={() => {
+                                            const input = document.getElementById('password') as HTMLInputElement;
+                                            input.type = input.type === 'password' ? 'text' : 'password';
+                                        }}
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            className="h-4 w-4"
+                                        >
+                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                            <circle cx="12" cy="12" r="3" />
+                                        </svg>
+                                    </Button>
+                                </div>
+                                {form.formState.errors.password && (
+                                    <p className="text-red-500 text-xs mt-1">
+                                        {form.formState.errors.password.message}
+                                    </p>
+                                )}
+                            </div>
+                            {error && (
+                                <p className="text-red-500 text-xs mt-1">
+                                    {error}
+                                </p>
+                            )}
+                            <div className="p-5 w-full">
+                                <Button type="submit" disabled={isLoading} className="w-full transition-all h-8 text-sm">
+                                    {isLoading ? <Loader2 className="animate-spin" /> : "Continue"}
+                                </Button>
+                            </div>
+                        </form>
+                    </Form>
                 </CardContent>
                 <CardFooter className="flex flex-col space-y-4 p-0">
                     <div className="bg-muted w-full py-4 flex items-center justify-center h-full">

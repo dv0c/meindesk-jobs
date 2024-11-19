@@ -14,6 +14,7 @@ import {
   Users
 } from "lucide-react"
 import * as React from "react"
+import { useSession } from "next-auth/react"
 
 import { NavMain } from "@/components/nav-main"
 import { NavProjects } from "@/components/nav-projects"
@@ -26,7 +27,6 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar"
-import { useUser } from "@clerk/clerk-react"
 
 // This is sample data.
 const data = {
@@ -200,8 +200,7 @@ const data = {
 
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { user } = useUser()
-
+  const user = useSession().data?.user
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -213,7 +212,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
       <SidebarFooter>
         {user && (
-          <NavUser user={user as any} />
+          <NavUser user={user} />
         )}
       </SidebarFooter>
       <SidebarRail />
