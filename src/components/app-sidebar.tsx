@@ -171,27 +171,27 @@ const data = {
   projects: [
     {
       name: "Customer Management",
-      url: "/admin/customers",
+      url: "/customers",
       icon: Users,
     },
     {
       name: "Service Packages",
-      url: "/admin/packages",
+      url: "/packages",
       icon: Package,
     },
     {
       name: "Order Management",
-      url: "/admin/orders",
+      url: "/orders",
       icon: ClipboardList,
     },
     {
       name: "User Analytics",
-      url: "/admin/analytics",
+      url: "/analytics",
       icon: BarChart2,
     },
     {
       name: "System Settings",
-      url: "/admin/settings",
+      url: "/settings",
       icon: Settings,
     },
   ]

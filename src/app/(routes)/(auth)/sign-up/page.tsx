@@ -43,26 +43,27 @@ export default function Component() {
             await axios.post('/api/auth/register', values).finally(() => setIsLoading(false)).then(async () => {
                 try {
                     const result = await signIn("credentials", {
-                        username: values.username,
+                        email: values.email,
                         password: values.password,
                         callbackUrl: "/",
-                    })
+                    });
 
                     if (result?.error) {
-                        throw new Error(result.error)
+                        throw new Error(result.error);
+                    } else {
+                       
                     }
 
-                    router.push("/")
                 } catch (error) {
-                    console.error("Login failed:", error)
-                    setError("Login failed. Please try again.")
+                    console.error("Login failed:", error);
+                    setError("Login failed. Please try again.");
                 } finally {
-                    setIsLoading(false)
+                    setIsLoading(false);
                 }
-            })
+            });
         } catch (error: any) {
             setIsLoading(false);
-            setError(error.response?.data || "Registration failed. Please try again.")
+            setError(error.response?.data || "Registration failed. Please try again.");
         }
     }
 
