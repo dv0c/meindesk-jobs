@@ -1,8 +1,7 @@
-// middleware.js
 import { NextRequest, NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 
-export async function middleware(req:NextRequest) {
+export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   // Check if the current route is the root route
@@ -18,7 +17,7 @@ export async function middleware(req:NextRequest) {
 
   // If no token exists, redirect to the sign-in page
   if (!token) {
-    const signInUrl = new URL('/sign-in', req.url); // Adjust path to your sign-in page
+    const signInUrl = new URL('/sign-in', req.nextUrl.origin); // Adjust path to your sign-in page
     return NextResponse.redirect(signInUrl);
   }
 

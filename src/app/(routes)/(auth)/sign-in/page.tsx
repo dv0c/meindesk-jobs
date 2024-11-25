@@ -40,14 +40,15 @@ export default function SignIn() {
             const result = await signIn("credentials", {
                 email: values.email,
                 password: values.password,
-                redirect: false
+                redirect: true,
+                callbackUrl: "/",
             })
 
             if (result?.error) {
                 throw new Error(result.error)
             }
 
-            router.push("/")
+            // router.push("/")
         } catch (error: any) {
             console.error("Login failed:", error)
             setError("Login failed. Please try again.")
